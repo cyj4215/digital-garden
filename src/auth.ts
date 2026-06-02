@@ -56,18 +56,27 @@ export const {
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "github" && user?.email) {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email },
+        const existingUser = await prisma.user.findFirst({
+          where: { githubId: account.providerAccountId },
         });
         if (!existingUser) {
-          await prisma.user.create({
+          await prisma.user.update({
+            where: { email: user.email },
             data: {
-              email: user.email,
-              name: user.name,
-              image: user.image,
               githubId: account.providerAccountId,
               role: "ADMIN",
+              image: user.image,
             },
+          }).catch(async () => {
+            await prisma.user.create({
+              data: {
+                email: user.email,
+                name: user.name,
+                image: user.image,
+                githubId: account.providerAccountId,
+                role: "ADMIN",
+              },
+            });
           });
         }
       }
