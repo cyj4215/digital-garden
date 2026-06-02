@@ -5,6 +5,7 @@ import { siteConfig, type Locale } from "@/lib/config";
 import { generateSiteMetadata } from "@/lib/metadata";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AuthSessionProvider from "@/components/AuthSessionProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,9 +45,11 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${inter.variable} ${firaCode.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-background text-foreground antialiased">
+        <AuthSessionProvider>
         <Header locale={typedLocale} />
         <main className="mx-auto max-w-4xl px-6 py-8">{children}</main>
         <Footer locale={typedLocale} />
+      </AuthSessionProvider>
       </body>
     </html>
   );
