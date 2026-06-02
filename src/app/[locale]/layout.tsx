@@ -5,6 +5,7 @@ import { siteConfig, type Locale } from "@/lib/config";
 import { generateSiteMetadata } from "@/lib/metadata";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { notFound } from "next/navigation";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
 
 const inter = Inter({
@@ -40,6 +41,9 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  if (!siteConfig.locales.includes(locale as Locale)) {
+    notFound();
+  }
   const typedLocale = locale as Locale;
 
   return (
