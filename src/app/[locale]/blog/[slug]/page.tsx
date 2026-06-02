@@ -8,6 +8,7 @@ import { generatePostMetadata } from "@/lib/metadata";
 import TableOfContents from "@/components/TableOfContents";
 import PostCard from "@/components/PostCard";
 import BackToTop from "@/components/BackToTop";
+import GiscusComments from "@/components/GiscusComments";
 
 export async function generateStaticParams() {
   const allSlugsZh = getAllSlugs("zh");
@@ -134,6 +135,11 @@ export default async function BlogPostPage({
           </div>
         </div>
       </article>
+
+      {/* Giscus Comments */}
+      <div className="mx-auto max-w-3xl">
+        <GiscusComments locale={locale} slug={slug} />
+      </div>
 
       {/* Related Posts */}
       {relatedPosts.length > 0 && (
