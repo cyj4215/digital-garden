@@ -41,3 +41,4 @@ next-env.d.ts
 # Keep dev.db for reference but don't deploy it
 prisma/dev.db
 prisma/dev.db-journal
+.env

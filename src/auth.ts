@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
@@ -10,9 +11,8 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
-
+  adapter: PrismaAdapter(prisma),
   trustHost: true,
-
   session: { strategy: "jwt" },
   pages: {
     signIn: "/zh/auth/login",
@@ -55,26 +55,20 @@ export const {
   ],
   callbacks: {
     async signIn({ user, account }) {
-      // For GitHub OAuth, create/find user in database
       if (account?.provider === "github" && user?.email) {
-        try {
-          const existingUser = await prisma.user.findUnique({
-            where: { email: user.email },
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email },
+        });
+        if (!existingUser) {
+          await prisma.user.create({
+            data: {
+              email: user.email,
+              name: user.name,
+              image: user.image,
+              githubId: account.providerAccountId,
+              role: "ADMIN",
+            },
           });
-          if (!existingUser) {
-            const newUser = await prisma.user.create({
-              data: {
-                email: user.email,
-                name: user.name,
-                image: user.image,
-              },
-            });
-            user.id = newUser.id;
-          } else {
-            user.id = existingUser.id;
-          }
-        } catch {
-          // Database might not be available, continue without DB
         }
       }
       return true;
@@ -82,15 +76,11 @@ export const {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        try {
-          const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
-            select: { role: true },
-          });
-          token.role = dbUser?.role || "USER";
-        } catch {
-          token.role = "USER";
-        }
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { role: true },
+        });
+        token.role = dbUser?.role || "USER";
       }
       return token;
     },

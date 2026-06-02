@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -15,6 +15,7 @@ model User {
   password      String?
   image         String?
   role          String    @default("USER")
+  githubId      String?   @unique
   createdAt     DateTime  @default(now())
 
   accounts Account[]
