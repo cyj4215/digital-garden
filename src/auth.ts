@@ -14,6 +14,17 @@ export const {
 
   debug: true,
   trustHost: true,
+  logger: {
+    error(error) {
+      console.error("[AUTH_DEBUG] Error:", error.message, error.stack);
+    },
+    warn(code) {
+      console.warn("[AUTH_DEBUG] Warn:", code);
+    },
+    debug(code) {
+      console.log("[AUTH_DEBUG] Debug:", code);
+    },
+  },
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   pages: {
