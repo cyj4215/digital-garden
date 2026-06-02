@@ -7,12 +7,12 @@ export function middleware(request: NextRequest) {
   const res = NextResponse.next();
   securityHeaders(res.headers);
 
-  if (url.startsWith("/admin") || url.startsWith("/api/admin")) {
+  if (url.startsWith("/api/admin")) {
     const sessionCookie =
       request.cookies.get("authjs.session-token") ??
       request.cookies.get("__Secure-authjs.session-token");
     if (!sessionCookie) {
-      return NextResponse.redirect(new URL("/zh/auth/login", request.url));
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
   }
 
