@@ -3,6 +3,13 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 
+function sanitizeHtml(html: string): string {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const marks = doc.querySelectorAll("mark");
+  return Array.from(marks).map(m => m.outerHTML).join("");
+}
+
+
 interface PagefindResult {
   id: string;
   url: string;
@@ -164,7 +171,7 @@ export default function SearchClient({ locale }: SearchClientProps) {
               </h2>
               <div
                 className="mt-2 text-sm leading-relaxed text-text-secondary line-clamp-2 [&_mark]:bg-accent/20 [&_mark]:text-accent [&_mark]:rounded [&_mark]:px-0.5"
-                dangerouslySetInnerHTML={{ __html: result.excerpt }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(result.excerpt) }}
               />
             </Link>
           ))}
