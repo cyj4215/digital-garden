@@ -1,23 +1,22 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import type { NextRequest } from "next/server";
 import { securityHeaders } from "@/lib/security-headers";
 
-export default auth((req) => {
-  const url = req.nextUrl.pathname;
+export function middleware(request: NextRequest) {
+  const url = request.nextUrl.pathname;
   const res = NextResponse.next();
-
   securityHeaders(res.headers);
 
   if (url.startsWith("/admin") || url.startsWith("/api/admin")) {
-    const role = (req.auth?.user as Record<string, unknown>)?.role;
-    if (role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/zh/auth/login", req.url));
+    const sessionCookie = request.cookies.get("next-auth.session-token");
+    if (!sessionCookie) {
+      return NextResponse.redirect(new URL("/zh/auth/login", request.url));
     }
   }
 
   return res;
-});
+}
 
 export const config = {
-  matcher: ["/:locale/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|pagefind|feed.xml).*)"],
 };
