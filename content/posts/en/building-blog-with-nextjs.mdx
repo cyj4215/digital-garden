@@ -1,0 +1,73 @@
+---
+title: "Building a Personal Blog with Next.js: A Complete Guide"
+date: "2026-06-01"
+tags: ["Next.js", "React", "Web Development", "Blog"]
+category: "Frontend"
+summary: "A detailed guide on building a modern personal blog from scratch with Next.js 16, MDX, Tailwind CSS — featuring bilingual support, dark theme, and full-text search."
+lang: "en"
+---
+
+## Why Next.js?
+
+Among frontend frameworks, Next.js stands out with its **hybrid rendering strategies**, **excellent performance optimization**, and **rich ecosystem**. For a personal blog, it strikes the perfect balance:
+
+- **SSG (Static Site Generation)**: Static pages like homepage and archive are generated at build time for instant loading
+- **ISR (Incremental Static Regeneration)**: Blog posts can be updated on-demand without rebuilding the entire site
+- **App Router**: Built on React Server Components, reducing client-side JavaScript
+- **Built-in Optimization**: Image optimization, font loading, and metadata management out of the box
+
+## Project Structure
+
+A clear project structure is the foundation of maintainability:
+
+```
+src/
+├── app/              # App Router pages
+│   ├── [locale]/     # Bilingual routing
+│   │   ├── blog/     # Blog pages
+│   │   ├── archive/  # Archive
+│   │   └── about/    # About me
+│   └── layout.tsx    # Root layout
+├── components/       # Reusable components
+├── lib/              # Utility functions
+│   ├── posts.ts      # Content processing
+│   ├── i18n.ts       # Internationalization
+│   └── config.ts     # Site configuration
+content/
+├── posts/
+│   ├── zh/           # Chinese posts
+│   └── en/           # English posts
+```
+
+## Core Technical Choices
+
+### MDX: Making Markdown More Powerful
+
+MDX lets you use React components directly in Markdown, enabling:
+
+- Embedding **interactive components** in articles (code demos, charts)
+- Using **custom Callout components** to highlight important information
+- Reusing the entire component library for richer content
+
+### Tailwind CSS: Fast, Consistent UI
+
+With Tailwind's utility classes, you can quickly implement design system specifications for spacing, colors, and typography while keeping code clean.
+
+## Performance Optimization
+
+> Good performance is not optimized — it's designed.
+
+- Use `<Image />` for automatic image optimization (WebP/AVIF, responsive sizes)
+- Use `next/font` for self-hosted fonts, eliminating external network requests
+- Leverage ISR caching to balance content freshness and access speed
+- Prioritize critical path rendering, lazy-load non-essential content
+
+## Summary
+
+Building a high-quality blog is a **systems engineering** problem. From content architecture to design systems to performance optimization, every aspect requires careful design. I hope this guide helps you get started quickly and build your own digital garden.
+
+**Next Steps:**
+
+1. Clone the project template and start your blogging journey
+2. Customize the design system to match your needs
+3. Write your first post
