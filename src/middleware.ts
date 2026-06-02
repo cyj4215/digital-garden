@@ -8,7 +8,9 @@ export function middleware(request: NextRequest) {
   securityHeaders(res.headers);
 
   if (url.startsWith("/admin") || url.startsWith("/api/admin")) {
-    const sessionCookie = request.cookies.get("next-auth.session-token");
+    const sessionCookie =
+      request.cookies.get("authjs.session-token") ??
+      request.cookies.get("__Secure-authjs.session-token");
     if (!sessionCookie) {
       return NextResponse.redirect(new URL("/zh/auth/login", request.url));
     }

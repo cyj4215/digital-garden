@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 import { siteConfig, type Locale } from "@/lib/config";
 import { t } from "@/lib/i18n";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -17,15 +18,17 @@ export default function MobileMenu({
   locale,
   pathname,
   isOpen,
-  onToggle,
   onClose,
 }: MobileMenuProps) {
   const navItems = siteConfig.navItems[locale];
+  const { data: session } = useSession();
+  const role = (session?.user as Record<string, unknown>)?.role as string | undefined;
+  const isAdmin = role === "ADMIN";
 
   return (
     <div className="md:hidden">
       <button
-        onClick={onToggle}
+        onClick={() => {}}
         className="rounded-lg p-2 text-text-secondary hover:text-foreground hover:bg-bg-secondary/50 transition-colors"
         aria-label="Toggle menu"
       >
@@ -37,19 +40,11 @@ export default function MobileMenu({
           stroke="currentColor"
           className="h-6 w-6"
         >
-          {isOpen ? (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          ) : (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-            />
-          )}
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+          />
         </svg>
       </button>
 
@@ -84,8 +79,53 @@ export default function MobileMenu({
             >
               {t(locale, "search")}
             </Link>
-            <div className="mt-4">
+
+            {isAdmin && (
+              <Link
+                href={`/${locale}/admin`}
+                onClick={onClose}
+                className="w-full py-3 text-center text-lg text-warning hover:text-warning/80 transition-colors"
+              >
+                管理
+              </Link>
+            )}
+
+            <div className="mt-4 flex flex-col items-center gap-3">
               <LanguageSwitcher locale={locale} pathname={pathname} />
+
+              {session?.user ? (
+                <div className="flex flex-col items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    {session.user.image ? (
+                      <img
+                        src={session.user.image}
+                        alt=""
+                        className="h-6 w-6 rounded-full"
+                      />
+                    ) : null}
+                    <span className="text-sm text-text-secondary">
+                      {session.user.name || session.user.email}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      onClose();
+                      signOut({ callbackUrl: `/${locale}` });
+                    }}
+                    className="rounded-lg border border-border-light px-4 py-2 text-sm text-text-secondary hover:text-error hover:border-error/40 transition-colors"
+                  >
+                    退出登录
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href={`/${locale}/auth/login`}
+                  onClick={onClose}
+                  className="rounded-lg border border-accent/30 bg-accent/10 px-4 py-2 text-sm font-medium text-accent transition-all hover:bg-accent/20"
+                >
+                  登录
+                </Link>
+              )}
             </div>
           </nav>
         </div>
