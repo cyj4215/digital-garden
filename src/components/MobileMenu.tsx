@@ -80,6 +80,13 @@ export default function MobileMenu({
               {t(locale, "search")}
             </Link>
 
+            <Link
+              href={`/${locale}/profile`}
+              onClick={onClose}
+              className="w-full py-3 text-center text-lg text-text-secondary hover:text-foreground transition-colors"
+            >
+              {locale === "zh" ? "个人资料" : "Profile"}
+            </Link>
             {isAdmin && (
               <Link
                 href={`/${locale}/admin`}
