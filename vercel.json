@@ -1,0 +1,4 @@
+{
+  "buildCommand": "prisma generate && next build && npx pagefind --site .next/server/app --output-path public/pagefind",
+  "installCommand": "npm install"
+}

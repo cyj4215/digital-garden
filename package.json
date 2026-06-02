@@ -7,7 +7,8 @@
     "build": "next build",
     "postbuild": "npx pagefind --site .next/server/app --output-path public/pagefind",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate || true"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.2",
