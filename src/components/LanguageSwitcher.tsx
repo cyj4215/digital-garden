@@ -1,31 +1,28 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { siteConfig, type Locale } from "@/lib/config";
 
 export default function LanguageSwitcher({
   locale,
   pathname,
 }: {
-  locale: Locale;
+  locale: string;
   pathname: string;
 }) {
   const router = useRouter();
-  const currentPath = pathname;
 
-  const switchLanguage = (newLocale: Locale) => {
-    const segments = currentPath.split("/");
+  const switchLanguage = () => {
+    const newLocale = locale === "zh" ? "en" : "zh";
+    const segments = pathname.split("/");
     segments[1] = newLocale;
     router.push(segments.join("/"));
   };
 
-  const otherLocale: Locale = locale === "zh" ? "en" : "zh";
-
   return (
     <button
-      onClick={() => switchLanguage(otherLocale)}
-      className="ml-1 rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-accent hover:text-accent"
-      aria-label={`Switch to ${otherLocale === "zh" ? "中文" : "English"}`}
+      onClick={switchLanguage}
+      className="rounded-lg border border-border-light/50 px-2.5 py-1.5 text-xs font-medium text-text-muted transition-all hover:border-accent/40 hover:text-accent hover:bg-accent-glow"
+      aria-label={`Switch to ${locale === "zh" ? "English" : "中文"}`}
     >
       {locale === "zh" ? "EN" : "中"}
     </button>

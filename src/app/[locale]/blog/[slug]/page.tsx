@@ -44,46 +44,55 @@ export default async function BlogPostPage({
 
   return (
     <>
-      <article className="mx-auto max-w-3xl">
-        <div className="mb-8">
+      <article className="mx-auto max-w-3xl animate-fade-in">
+        {/* Back to blog */}
+        <div className="mb-10">
           <Link
             href={`/${locale}/blog`}
-            className="text-sm text-text-secondary hover:text-accent transition-colors"
+            className="group inline-flex items-center gap-1.5 text-sm text-text-muted transition-colors hover:text-accent"
           >
-            ← {t(locale, "backToBlog")}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            {t(locale, "backToBlog")}
           </Link>
         </div>
 
-        <header className="mb-8 flex flex-col gap-4">
-          <div className="flex items-center gap-3 text-sm text-text-secondary">
-            <time dateTime={post.date}>{post.date}</time>
-            <span className="text-border">|</span>
-            <span>{post.readingTime}</span>
-            <span className="text-border">|</span>
+        {/* Post Header */}
+        <header className="mb-10 flex flex-col gap-5">
+          {/* Meta */}
+          <div className="flex flex-wrap items-center gap-2 text-sm text-text-muted">
+            <time dateTime={post.date} className="tabular-nums">{post.date}</time>
+            <span className="text-border-light">·</span>
+            <span className="tabular-nums">{post.readingTime}</span>
+            <span className="text-border-light">·</span>
             <Link
               href={`/${locale}/categories/${encodeURIComponent(post.category)}`}
-              className="rounded-full bg-accent/10 px-2.5 py-0.5 text-accent hover:bg-accent/20 transition-colors"
+              className="rounded-full bg-accent/10 px-3 py-0.5 text-xs font-medium text-accent transition-colors hover:bg-accent/20"
             >
               {post.category}
             </Link>
           </div>
 
-          <h1 className="text-4xl font-bold leading-tight md:text-5xl">
+          {/* Title */}
+          <h1 className="text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-[2.75rem]">
             {post.title}
           </h1>
 
+          {/* Summary */}
           {post.summary && (
-            <p className="text-lg text-text-secondary leading-relaxed">
+            <p className="text-lg leading-relaxed text-text-secondary">
               {post.summary}
             </p>
           )}
 
-          <div className="flex flex-wrap gap-2">
+          {/* Tags */}
+          <div className="flex flex-wrap gap-1.5">
             {post.tags.map((tag) => (
               <Link
                 key={tag}
                 href={`/${locale}/tags/${encodeURIComponent(tag)}`}
-                className="rounded-md bg-tag-bg/50 px-2.5 py-1 text-xs text-tag-text hover:bg-tag-bg transition-colors"
+                className="rounded-md bg-tag-bg px-2.5 py-1 text-xs font-medium text-tag-text transition-colors hover:bg-accent/15"
               >
                 #{tag}
               </Link>
@@ -91,37 +100,50 @@ export default async function BlogPostPage({
           </div>
         </header>
 
-        <hr className="border-border" />
+        {/* Divider */}
+        <div className="divider-gradient mb-10" />
 
-        <div className="relative mt-8 flex gap-12">
+        {/* Content + TOC */}
+        <div className="relative flex gap-12">
           <article className="prose prose-lg prose-invert max-w-none flex-1 prose-headings:scroll-mt-20 prose-pre:bg-transparent prose-pre:p-0 prose-code:before:content-none prose-code:after:content-none">
             <div dangerouslySetInnerHTML={{ __html: renderMarkdown(post.content) }} />
           </article>
-          <TableOfContents locale={l} content={post.content} />
+          <TableOfContents locale={locale} content={post.content} />
         </div>
 
-        <div className="mt-12 flex items-center gap-4 rounded-xl border border-border bg-background-secondary/30 p-4">
-          <span className="text-sm text-text-secondary">
-            {t(locale, "shareArticle")}
-          </span>
-          <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://digital-garden.vercel.app/${locale}/blog/${slug}`)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-lg border border-border px-3 py-1.5 text-xs text-text-secondary hover:border-accent hover:text-accent transition-colors"
-          >
-            Twitter / X
-          </a>
+        {/* Share */}
+        <div className="mt-12 rounded-xl border border-border/60 bg-bg-secondary/20 p-5">
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium text-text-secondary">
+              {t(locale, "shareArticle")}
+            </span>
+            <div className="h-4 w-px bg-border-light" />
+            <div className="flex items-center gap-2">
+              <a
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://digital-garden.vercel.app/${locale}/blog/${slug}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border-light px-3 py-1.5 text-xs font-medium text-text-secondary transition-all hover:border-accent/40 hover:text-accent hover:bg-accent-glow"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+                Twitter / X
+              </a>
+            </div>
+          </div>
         </div>
       </article>
 
+      {/* Related Posts */}
       {relatedPosts.length > 0 && (
         <section className="mt-16">
-          <h2 className="mb-6 text-2xl font-bold">
+          <div className="divider-gradient mb-10" />
+          <h2 className="mb-6 text-2xl font-bold tracking-tight">
             {t(locale, "relatedPosts")}
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
-            {relatedPosts.map((rp) => (
+            {relatedPosts.map((rp, i) => (
               <PostCard
                 key={rp.slug}
                 title={rp.title}
@@ -132,6 +154,7 @@ export default async function BlogPostPage({
                 slug={rp.slug}
                 locale={l}
                 readingTime={rp.readingTime}
+                index={i}
               />
             ))}
           </div>
@@ -145,8 +168,20 @@ export default async function BlogPostPage({
 
 function renderMarkdown(content: string): string {
   let html = content;
-  html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code class="language-$1">$2</code></pre>');
-  html = html.replace(/`([^`]+)`/g, '<code class="rounded bg-code-bg px-1.5 py-0.5 text-accent text-sm">$1</code>');
+
+  // Code blocks
+  html = html.replace(
+    /```(\w+)?\n([\s\S]*?)```/g,
+    '<pre><code class="language-$1">$2</code></pre>'
+  );
+
+  // Inline code
+  html = html.replace(
+    /`([^`]+)`/g,
+    '<code>$1</code>'
+  );
+
+  // Headers with IDs
   html = html.replace(/^### (.+)$/gm, (_, text) => {
     const id = text.toLowerCase().replace(/[^\w\s\u4e00-\u9fff-]/g, "").replace(/\s+/g, "-");
     return `<h3 id="${id}">${text}</h3>`;
@@ -155,14 +190,34 @@ function renderMarkdown(content: string): string {
     const id = text.toLowerCase().replace(/[^\w\s\u4e00-\u9fff-]/g, "").replace(/\s+/g, "-");
     return `<h2 id="${id}">${text}</h2>`;
   });
+
+  // Bold
   html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-  html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-accent hover:text-accent-hover underline underline-offset-2">$1</a>');
-  html = html.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-accent pl-4 text-text-secondary italic my-4">$1</blockquote>');
+
+  // Links
+  html = html.replace(
+    /\[(.+?)\]\((.+?)\)/g,
+    '<a href="$2">$1</a>'
+  );
+
+  // Blockquotes
+  html = html.replace(
+    /^> (.+)$/gm,
+    '<blockquote><p>$1</p></blockquote>'
+  );
+
+  // Lists
   html = html.replace(/^- (.+)$/gm, "<li>$1</li>");
-  html = html.split("\n\n").map((block) => {
-    block = block.trim();
-    if (block.startsWith("<") || block === "") return block;
-    return `<p class="my-4 leading-relaxed">${block.replace(/\n/g, "<br />")}</p>`;
-  }).join("\n");
+
+  // Paragraphs
+  html = html
+    .split("\n\n")
+    .map((block) => {
+      block = block.trim();
+      if (block.startsWith("<") || block === "") return block;
+      return `<p>${block.replace(/\n/g, "<br />")}</p>`;
+    })
+    .join("\n");
+
   return html;
 }

@@ -2,96 +2,291 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --background-secondary: #1e293b;
-  --background-tertiary: #334155;
+  --background: #0a0e1a;
+  --background-secondary: #111827;
+  --background-tertiary: #1f2937;
+  --foreground: #e2e8f0;
+  --foreground-bright: #f8fafc;
   --accent: #38bdf8;
   --accent-hover: #7dd3fc;
+  --accent-dim: #0ea5e9;
+  --accent-glow: rgba(56, 189, 248, 0.15);
   --text-secondary: #94a3b8;
-  --border: #334155;
-  --code-bg: #1e293b;
-  --tag-bg: #1e3a5f;
+  --text-muted: #64748b;
+  --border: #1e293b;
+  --border-light: #334155;
+  --code-bg: #0d1117;
+  --code-border: #21262d;
+  --tag-bg: rgba(56, 189, 248, 0.08);
   --tag-text: #7dd3fc;
+  --gradient-start: #0ea5e9;
+  --gradient-end: #8b5cf6;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --error: #f87171;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-foreground-bright: var(--foreground-bright);
   --color-bg-secondary: var(--background-secondary);
   --color-bg-tertiary: var(--background-tertiary);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
+  --color-accent-dim: var(--accent-dim);
+  --color-accent-glow: var(--accent-glow);
   --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
   --color-border: var(--border);
+  --color-border-light: var(--border-light);
   --color-code-bg: var(--code-bg);
+  --color-code-border: var(--code-border);
   --color-tag-bg: var(--tag-bg);
   --color-tag-text: var(--tag-text);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-fira-code);
 }
 
+/* ─── Base ─── */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Prose overrides for dark theme */
+/* ─── Selection ─── */
+::selection {
+  background: var(--accent);
+  color: var(--background);
+}
+
+/* ─── Prose (dark) ─── */
 .prose {
   --tw-prose-body: var(--foreground);
-  --tw-prose-headings: var(--foreground);
+  --tw-prose-headings: var(--foreground-bright);
   --tw-prose-links: var(--accent);
-  --tw-prose-bold: var(--foreground);
+  --tw-prose-bold: var(--foreground-bright);
   --tw-prose-counters: var(--text-secondary);
-  --tw-prose-bullets: var(--accent);
+  --tw-prose-bullets: var(--accent-dim);
   --tw-prose-hr: var(--border);
   --tw-prose-quotes: var(--text-secondary);
-  --tw-prose-quote-borders: var(--accent);
+  --tw-prose-quote-borders: var(--accent-dim);
   --tw-prose-code: var(--accent);
-  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-code: #e6edf3;
   --tw-prose-pre-bg: var(--code-bg);
   --tw-prose-th-borders: var(--border);
   --tw-prose-td-borders: var(--border);
 }
 
-/* Code block styling */
+.prose h1, .prose h2, .prose h3 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.prose h2 {
+  margin-top: 2.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.prose a:hover {
+  color: var(--accent-hover);
+}
+
+.prose blockquote {
+  border-left-color: var(--accent-dim);
+  background: var(--accent-glow);
+  padding: 1rem 1.25rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-style: normal;
+}
+
+.prose blockquote p {
+  color: var(--text-secondary);
+}
+
+.prose img {
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+}
+
+.prose table {
+  border-collapse: collapse;
+}
+
+.prose th {
+  background: var(--background-secondary);
+  font-weight: 600;
+}
+
+/* ─── Code Blocks ─── */
 pre {
   background: var(--code-bg) !important;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 1rem;
+  border: 1px solid var(--code-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
   overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  margin: 1.5rem 0;
+}
+
+pre code {
+  font-family: var(--font-mono), "Fira Code", monospace;
+  font-size: 0.875em;
+  background: none !important;
+  padding: 0;
+  border-radius: 0;
 }
 
 code {
   font-family: var(--font-mono), "Fira Code", monospace;
-  font-size: 0.9em;
+  font-size: 0.875em;
 }
 
-/* Callout styles */
+:not(pre) > code {
+  background: var(--background-tertiary);
+  color: var(--accent);
+  padding: 0.15em 0.4em;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border);
+  font-weight: 500;
+}
+
+/* ─── Callout ─── */
 .callout {
-  border-left: 4px solid var(--accent);
-  background: var(--background-secondary);
+  border-left: 4px solid var(--accent-dim);
+  background: var(--accent-glow);
   padding: 1rem 1.25rem;
-  border-radius: 0 0.5rem 0.5rem 0;
+  border-radius: 0 0.75rem 0.75rem 0;
   margin: 1.5rem 0;
 }
 
-/* Scrollbar */
+.callout-warn {
+  border-left-color: var(--warning);
+  background: rgba(251, 191, 36, 0.08);
+}
+
+.callout-error {
+  border-left-color: var(--error);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+/* ─── Animations ─── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.4s ease-out;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* ─── Gradient text ─── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Glow effects ─── */
+.glow-accent {
+  box-shadow: 0 0 20px var(--accent-glow), 0 0 60px rgba(56, 189, 248, 0.05);
+}
+
+.card-glow {
+  position: relative;
+}
+
+.card-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, transparent 40%, var(--accent-dim) 50%, transparent 60%);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card-glow:hover::before {
+  opacity: 1;
+}
+
+/* ─── Divider ─── */
+.divider-gradient {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+}
+
+/* ─── Scrollbar ─── */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--border-light);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+  background: var(--text-muted);
+}
+
+/* ─── Smooth scroll ─── */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+/* ─── Focus visible ─── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
