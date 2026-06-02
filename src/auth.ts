@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
@@ -12,20 +11,8 @@ export const {
   signOut,
 } = NextAuth({
 
-  debug: true,
   trustHost: true,
-  logger: {
-    error(error) {
-      console.error("[AUTH_DEBUG] Error:", error.message, error.stack);
-    },
-    warn(code) {
-      console.warn("[AUTH_DEBUG] Warn:", code);
-    },
-    debug(code) {
-      console.log("[AUTH_DEBUG] Debug:", code);
-    },
-  },
-  adapter: PrismaAdapter(prisma),
+
   session: { strategy: "jwt" },
   pages: {
     signIn: "/zh/auth/login",
@@ -67,15 +54,43 @@ export const {
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      // For GitHub OAuth, create/find user in database
+      if (account?.provider === "github" && user?.email) {
+        try {
+          const existingUser = await prisma.user.findUnique({
+            where: { email: user.email },
+          });
+          if (!existingUser) {
+            const newUser = await prisma.user.create({
+              data: {
+                email: user.email,
+                name: user.name,
+                image: user.image,
+              },
+            });
+            user.id = newUser.id;
+          } else {
+            user.id = existingUser.id;
+          }
+        } catch {
+          // Database might not be available, continue without DB
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        // Fetch role from DB
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
-          select: { role: true },
-        });
-        token.role = dbUser?.role || "USER";
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { role: true },
+          });
+          token.role = dbUser?.role || "USER";
+        } catch {
+          token.role = "USER";
+        }
       }
       return token;
     },
