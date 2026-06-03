@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function PostError({
   error,
@@ -9,6 +10,9 @@ export default function PostError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const pathname = usePathname();
+  const locale = pathname.split("/")[1] || "zh";
+
   return (
     <div className="mx-auto flex max-w-3xl flex-col items-center justify-center py-24 text-center">
       <div className="mb-6 text-6xl">!</div>
@@ -24,7 +28,7 @@ export default function PostError({
           Try again
         </button>
         <Link
-          href="/zh/blog"
+          href={`/${locale}/blog`}
           className="rounded-lg border border-border px-6 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:border-accent hover:text-accent"
         >
           Back to blog
