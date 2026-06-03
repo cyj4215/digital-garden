@@ -3,6 +3,7 @@ import { type Locale } from "@/lib/config";
 import { t } from "@/lib/i18n";
 import { getAllPosts } from "@/lib/posts";
 import PostCard from "@/components/PostCard";
+import Pagination from "@/components/Pagination";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -39,7 +40,7 @@ export default async function BlogPage({
       </div>
 
       <div className="flex flex-col gap-4">
-        {posts.map((post) => (
+        {posts.map((post, i) => (
           <PostCard
             key={post.slug}
             title={post.title}
@@ -50,6 +51,7 @@ export default async function BlogPage({
             slug={post.slug}
             locale={l}
             readingTime={post.readingTime}
+            index={i}
           />
         ))}
       </div>
@@ -59,6 +61,13 @@ export default async function BlogPage({
           {t(locale, "noPosts")}
         </p>
       )}
+
+      <Pagination
+        locale={l}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath={`/${locale}/blog`}
+      />
     </div>
   );
 }

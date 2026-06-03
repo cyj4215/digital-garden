@@ -3,6 +3,7 @@ import Link from "next/link";
 import { t } from "@/lib/i18n";
 import { getAllTags, getPostsByTag } from "@/lib/posts";
 import PostCard from "@/components/PostCard";
+import Pagination from "@/components/Pagination";
 
 export async function generateStaticParams() {
   const allZh = getAllTags("zh").map((name) => ({ locale: "zh", name }));
@@ -12,15 +13,25 @@ export async function generateStaticParams() {
 
 export default async function TagDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; name: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { locale, name } = await params;
+  const { page: pageParam } = await searchParams;
   const l = locale as "zh" | "en";
   const decodedName = decodeURIComponent(name);
-  const posts = getPostsByTag(locale, decodedName);
+  const currentPage = Number(pageParam) || 1;
+  const postsPerPage = 10;
+  const allTagPosts = getPostsByTag(locale, decodedName);
+  const totalPages = Math.ceil(allTagPosts.length / postsPerPage);
+  const posts = allTagPosts.slice(
+    (currentPage - 1) * postsPerPage,
+    currentPage * postsPerPage
+  );
 
-  if (posts.length === 0) notFound();
+  if (allTagPosts.length === 0) notFound();
 
   return (
     <div className="flex flex-col gap-8 animate-fade-in">
@@ -38,7 +49,7 @@ export default async function TagDetailPage({
           <span className="text-accent">#</span>{decodedName}
         </h1>
         <p className="mt-2 text-text-secondary">
-          {locale === "zh" ? `${posts.length} 篇文章` : `${posts.length} posts`}
+          {locale === "zh" ? `${allTagPosts.length} 篇文章` : `${allTagPosts.length} posts`}
         </p>
       </div>
       <div className="flex flex-col gap-4">
@@ -57,6 +68,13 @@ export default async function TagDetailPage({
           />
         ))}
       </div>
+
+      <Pagination
+        locale={l}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath={`/${locale}/tags/${encodeURIComponent(decodedName)}`}
+      />
     </div>
   );
 }

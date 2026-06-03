@@ -4,6 +4,7 @@ import { type Locale } from "@/lib/config";
 import { t } from "@/lib/i18n";
 import { getAllCategories, getPostsByCategory } from "@/lib/posts";
 import PostCard from "@/components/PostCard";
+import Pagination from "@/components/Pagination";
 
 export async function generateStaticParams() {
   const allZh = getAllCategories("zh").map((name) => ({ locale: "zh", name }));
@@ -13,15 +14,25 @@ export async function generateStaticParams() {
 
 export default async function CategoryDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; name: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { locale, name } = await params;
+  const { page: pageParam } = await searchParams;
   const l = locale as Locale;
   const decodedName = decodeURIComponent(name);
-  const posts = getPostsByCategory(locale, decodedName);
+  const currentPage = Number(pageParam) || 1;
+  const postsPerPage = 10;
+  const allCategoryPosts = getPostsByCategory(locale, decodedName);
+  const totalPages = Math.ceil(allCategoryPosts.length / postsPerPage);
+  const posts = allCategoryPosts.slice(
+    (currentPage - 1) * postsPerPage,
+    currentPage * postsPerPage
+  );
 
-  if (posts.length === 0) notFound();
+  if (allCategoryPosts.length === 0) notFound();
 
   return (
     <div className="flex flex-col gap-8 animate-fade-in">
@@ -37,7 +48,7 @@ export default async function CategoryDetailPage({
         </Link>
         <h1 className="mt-4 text-3xl font-bold tracking-tight">{decodedName}</h1>
         <p className="mt-2 text-text-secondary">
-          {locale === "zh" ? `${posts.length} 篇文章` : `${posts.length} posts`}
+          {locale === "zh" ? `${allCategoryPosts.length} 篇文章` : `${allCategoryPosts.length} posts`}
         </p>
       </div>
       <div className="flex flex-col gap-4">
@@ -56,6 +67,13 @@ export default async function CategoryDetailPage({
           />
         ))}
       </div>
+
+      <Pagination
+        locale={l}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath={`/${locale}/categories/${encodeURIComponent(decodedName)}`}
+      />
     </div>
   );
 }
