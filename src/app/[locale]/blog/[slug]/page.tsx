@@ -10,6 +10,7 @@ import TableOfContents from "@/components/TableOfContents";
 import PostCard from "@/components/PostCard";
 import BackToTop from "@/components/BackToTop";
 import GiscusComments from "@/components/GiscusComments";
+import ShareButtons from "@/components/ShareButtons";
 import { compileMDXContent } from "@/lib/mdx";
 
 export async function generateStaticParams() {
@@ -147,19 +148,11 @@ export default async function BlogPostPage({
               {t(locale, "shareArticle")}
             </span>
             <div className="h-4 w-px bg-border-light" />
-            <div className="flex items-center gap-2">
-              <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://digital-garden.vercel.app/${locale}/blog/${slug}`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-border-light px-3 py-1.5 text-xs font-medium text-text-secondary transition-all hover:border-accent/40 hover:text-accent hover:bg-accent-glow"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-                Twitter / X
-              </a>
-            </div>
+            <ShareButtons
+              title={post.title}
+              url={`https://digital-garden.vercel.app/${locale}/blog/${slug}`}
+              locale={locale}
+            />
           </div>
         </div>
       </article>
