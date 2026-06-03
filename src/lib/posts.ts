@@ -44,7 +44,7 @@ export function getAllPosts(locale: string): Post[] {
     return {
       ...frontmatter,
       slug,
-      readingTime: stats.text.replace("min read", "分钟阅读"),
+      readingTime: locale === "zh" ? stats.text.replace("min read", "分钟阅读") : stats.text,
       content,
     };
   });
@@ -67,7 +67,7 @@ export function getPostBySlug(locale: string, slug: string): Post | null {
   return {
     ...frontmatter,
     slug,
-    readingTime: stats.text.replace("min read", "分钟阅读"),
+    readingTime: locale === "zh" ? stats.text.replace("min read", "分钟阅读") : stats.text,
     content,
   };
 }
