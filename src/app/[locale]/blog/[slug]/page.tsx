@@ -1,4 +1,5 @@
 import { type Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { type Locale } from "@/lib/config";
@@ -88,6 +89,20 @@ export default async function BlogPostPage({
             </p>
           )}
 
+          {/* Cover Image */}
+          {post.coverImage && (
+            <div className="relative aspect-[2/1] w-full overflow-hidden rounded-xl border border-border">
+              <Image
+                src={post.coverImage}
+                alt={post.title}
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, 768px"
+              />
+            </div>
+          )}
+
           {/* Tags */}
           <div className="flex flex-wrap gap-1.5">
             {post.tags.map((tag) => (
@@ -162,6 +177,7 @@ export default async function BlogPostPage({
                 locale={l}
                 readingTime={rp.readingTime}
                 index={i}
+                coverImage={rp.coverImage}
               />
             ))}
           </div>

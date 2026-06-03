@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { type Locale } from "@/lib/config";
 
@@ -11,6 +12,7 @@ interface PostCardProps {
   locale: Locale;
   readingTime: string;
   index?: number;
+  coverImage?: string;
 }
 
 export default function PostCard({
@@ -23,6 +25,7 @@ export default function PostCard({
   locale,
   readingTime,
   index = 0,
+  coverImage = undefined,
 }: PostCardProps) {
   const href = `/${locale}/blog/${slug}`;
 
@@ -42,6 +45,18 @@ export default function PostCard({
             {category}
           </span>
         </div>
+
+        {coverImage && (
+          <div className="relative mt-1 aspect-[2/1] w-full overflow-hidden rounded-lg border border-border">
+            <Image
+              src={coverImage}
+              alt={title}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          </div>
+        )}
 
         {/* Title */}
         <Link href={href} className="block">
