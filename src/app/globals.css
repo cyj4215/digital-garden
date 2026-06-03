@@ -11,6 +11,7 @@
   --accent-hover: #7dd3fc;
   --accent-dim: #0ea5e9;
   --accent-glow: rgba(56, 189, 248, 0.15);
+  --accent-glow-faint: rgba(56, 189, 248, 0.05);
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   --border: #1e293b;
@@ -38,6 +39,7 @@
   --accent-hover: #0369a1;
   --accent-dim: #0ea5e9;
   --accent-glow: rgba(2, 132, 199, 0.1);
+  --accent-glow-faint: rgba(2, 132, 199, 0.05);
   --text-secondary: #475569;
   --text-muted: #94a3b8;
   --border: #e2e8f0;
@@ -269,7 +271,7 @@ code {
 
 /* ─── Glow effects ─── */
 .glow-accent {
-  box-shadow: 0 0 20px var(--accent-glow), 0 0 60px rgba(56, 189, 248, 0.05);
+  box-shadow: 0 0 20px var(--accent-glow), 0 0 60px var(--accent-glow-faint);
 }
 
 .card-glow {
