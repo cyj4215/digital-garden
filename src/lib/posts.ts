@@ -135,6 +135,18 @@ export function getAllSeriesNames(locale: string): string[] {
   return getSeriesGroups(locale).map((g) => g.name);
 }
 
+export function getAdjacentPosts(
+  locale: string,
+  currentSlug: string
+): { prev: Post | null; next: Post | null } {
+  const posts = getAllPosts(locale);
+  const index = posts.findIndex((p) => p.slug === currentSlug);
+  return {
+    prev: index < posts.length - 1 ? posts[index + 1] : null,
+    next: index > 0 ? posts[index - 1] : null,
+  };
+}
+
 export function getRelatedPosts(
   locale: string,
   currentSlug: string,

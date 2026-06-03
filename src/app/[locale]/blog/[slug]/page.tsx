@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { type Locale } from "@/lib/config";
 import { t } from "@/lib/i18n";
-import { getPostBySlug, getAllSlugs, getRelatedPosts } from "@/lib/posts";
+import { getPostBySlug, getAllSlugs, getRelatedPosts, getAdjacentPosts } from "@/lib/posts";
 import { generatePostMetadata } from "@/lib/metadata";
 import TableOfContents from "@/components/TableOfContents";
 import PostCard from "@/components/PostCard";
@@ -44,6 +44,7 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   const relatedPosts = getRelatedPosts(locale, slug, 3);
+  const { prev, next } = getAdjacentPosts(locale, slug);
 
   return (
     <>
@@ -193,6 +194,38 @@ export default async function BlogPostPage({
             ))}
           </div>
         </section>
+      )}
+
+      {/* Post Navigation */}
+      {(prev || next) && (
+        <nav className="mx-auto mt-12 flex max-w-3xl gap-4" aria-label="Post navigation">
+          {prev ? (
+            <Link
+              href={`/${locale}/blog/${prev.slug}`}
+              className="flex flex-1 flex-col gap-1 rounded-xl border border-border/60 bg-bg-secondary/20 p-5 transition-all hover:border-accent/40 hover:bg-bg-secondary/50"
+            >
+              <span className="text-xs text-text-muted">{t(locale, "previousPost")}</span>
+              <span className="text-sm font-medium text-foreground">
+                {prev.title}
+              </span>
+            </Link>
+          ) : (
+            <div className="flex-1" />
+          )}
+          {next ? (
+            <Link
+              href={`/${locale}/blog/${next.slug}`}
+              className="flex flex-1 flex-col items-end gap-1 rounded-xl border border-border/60 bg-bg-secondary/20 p-5 transition-all hover:border-accent/40 hover:bg-bg-secondary/50 text-right"
+            >
+              <span className="text-xs text-text-muted">{t(locale, "nextPost")}</span>
+              <span className="text-sm font-medium text-foreground">
+                {next.title}
+              </span>
+            </Link>
+          ) : (
+            <div className="flex-1" />
+          )}
+        </nav>
       )}
 
       <BackToTop locale={l} />
