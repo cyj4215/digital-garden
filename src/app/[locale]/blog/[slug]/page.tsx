@@ -9,6 +9,7 @@ import TableOfContents from "@/components/TableOfContents";
 import PostCard from "@/components/PostCard";
 import BackToTop from "@/components/BackToTop";
 import GiscusComments from "@/components/GiscusComments";
+import { compileMDXContent } from "@/lib/mdx";
 
 export async function generateStaticParams() {
   const allSlugsZh = getAllSlugs("zh");
@@ -107,7 +108,7 @@ export default async function BlogPostPage({
         {/* Content + TOC */}
         <div className="relative flex gap-12">
           <article className="prose prose-lg prose-invert max-w-none flex-1 prose-headings:scroll-mt-20 prose-pre:bg-transparent prose-pre:p-0 prose-code:before:content-none prose-code:after:content-none">
-            <div dangerouslySetInnerHTML={{ __html: renderMarkdown(post.content) }} />
+            <MDXContent content={post.content} />
           </article>
           <TableOfContents locale={locale} content={post.content} />
         </div>
@@ -172,58 +173,7 @@ export default async function BlogPostPage({
   );
 }
 
-function renderMarkdown(content: string): string {
-  let html = content;
-
-  // Code blocks
-  html = html.replace(
-    /```(\w+)?\n([\s\S]*?)```/g,
-    '<pre><code class="language-$1">$2</code></pre>'
-  );
-
-  // Inline code
-  html = html.replace(
-    /`([^`]+)`/g,
-    '<code>$1</code>'
-  );
-
-  // Headers with IDs
-  html = html.replace(/^### (.+)$/gm, (_, text) => {
-    const id = text.toLowerCase().replace(/[^\w\s\u4e00-\u9fff-]/g, "").replace(/\s+/g, "-");
-    return `<h3 id="${id}">${text}</h3>`;
-  });
-  html = html.replace(/^## (.+)$/gm, (_, text) => {
-    const id = text.toLowerCase().replace(/[^\w\s\u4e00-\u9fff-]/g, "").replace(/\s+/g, "-");
-    return `<h2 id="${id}">${text}</h2>`;
-  });
-
-  // Bold
-  html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-
-  // Links
-  html = html.replace(
-    /\[(.+?)\]\((.+?)\)/g,
-    '<a href="$2">$1</a>'
-  );
-
-  // Blockquotes
-  html = html.replace(
-    /^> (.+)$/gm,
-    '<blockquote><p>$1</p></blockquote>'
-  );
-
-  // Lists
-  html = html.replace(/^- (.+)$/gm, "<li>$1</li>");
-
-  // Paragraphs
-  html = html
-    .split("\n\n")
-    .map((block) => {
-      block = block.trim();
-      if (block.startsWith("<") || block === "") return block;
-      return `<p>${block.replace(/\n/g, "<br />")}</p>`;
-    })
-    .join("\n");
-
-  return html;
+async function MDXContent({ content }: { content: string }) {
+  const mdx = await compileMDXContent(content);
+  return <div>{mdx}</div>;
 }

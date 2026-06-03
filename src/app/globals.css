@@ -290,3 +290,52 @@ html {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* ─── Rehype Pretty Code ─── */
+[data-rehype-pretty-code-figure] {
+  margin: 1.5rem 0;
+  border-radius: 0.75rem;
+  border: 1px solid var(--code-border);
+  overflow: hidden;
+}
+
+[data-rehype-pretty-code-figure] pre {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+[data-rehype-pretty-code-figure] [data-rehype-pretty-code-title] {
+  background: var(--background-secondary);
+  padding: 0.5rem 1.25rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--code-border);
+}
+
+[data-rehype-pretty-code-figure] code {
+  counter-reset: line;
+}
+
+[data-rehype-pretty-code-figure] code > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 1rem;
+  margin-right: 1rem;
+  text-align: right;
+  color: var(--text-muted);
+  font-size: 0.8em;
+}
+
+.heading-anchor {
+  text-decoration: none;
+  color: inherit;
+}
+
+.heading-anchor:hover::before {
+  content: "#";
+  color: var(--accent);
+  margin-right: 0.3em;
+}
