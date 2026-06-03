@@ -1,5 +1,6 @@
 export const siteConfig = {
   name: "Digital Garden",
+  url: "https://digital-garden.vercel.app",
   description: {
     zh: "一个热爱技术的开发者的数字花园，记录技术思考、学习笔记与项目复盘。",
     en: "A digital garden of a tech enthusiast, documenting technical insights, learning notes, and project retrospectives.",
