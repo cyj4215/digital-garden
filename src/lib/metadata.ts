@@ -45,7 +45,7 @@ export function generatePostMetadata(post: {
   slug: string;
   lang: Locale;
 }): Metadata {
-  const url = `/blog/${post.slug}`;
+  const url = `/${post.lang}/blog/${post.slug}`;
 
   return {
     title: post.title,
