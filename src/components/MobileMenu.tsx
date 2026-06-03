@@ -18,6 +18,7 @@ export default function MobileMenu({
   locale,
   pathname,
   isOpen,
+  onToggle,
   onClose,
 }: MobileMenuProps) {
   const navItems = siteConfig.navItems[locale];
@@ -28,7 +29,7 @@ export default function MobileMenu({
   return (
     <div className="md:hidden">
       <button
-        onClick={() => {}}
+        onClick={onToggle}
         className="rounded-lg p-2 text-text-secondary hover:text-foreground hover:bg-bg-secondary/50 transition-colors"
         aria-label="Toggle menu"
       >
