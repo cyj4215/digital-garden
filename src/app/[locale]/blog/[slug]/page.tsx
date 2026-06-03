@@ -75,6 +75,17 @@ export default async function BlogPostPage({
             >
               {post.category}
             </Link>
+            {post.series && (
+              <>
+                <span className="text-border-light">·</span>
+                <Link
+                  href={`/${locale}/series/${encodeURIComponent(post.series)}`}
+                  className="rounded-full bg-gradient-to-r from-accent/10 to-purple-500/10 px-3 py-0.5 text-xs font-medium text-accent transition-colors hover:from-accent/20 hover:to-purple-500/20"
+                >
+                  {t(locale, "series")}: {post.series}
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Title */}

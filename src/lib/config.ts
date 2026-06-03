@@ -16,6 +16,7 @@ export const siteConfig = {
     zh: [
       { label: "首页", href: "/" },
       { label: "文章", href: "/blog" },
+      { label: "系列", href: "/series" },
       { label: "分类", href: "/categories" },
       { label: "归档", href: "/archive" },
       { label: "关于", href: "/about" },
@@ -23,6 +24,7 @@ export const siteConfig = {
     en: [
       { label: "Home", href: "/" },
       { label: "Blog", href: "/blog" },
+      { label: "Series", href: "/series" },
       { label: "Categories", href: "/categories" },
       { label: "Archive", href: "/archive" },
       { label: "About", href: "/about" },

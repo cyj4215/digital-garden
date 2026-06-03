@@ -101,6 +101,40 @@ export function getPostsByTag(locale: string, tag: string): Post[] {
   return getAllPosts(locale).filter((p) => p.tags.includes(tag));
 }
 
+export interface SeriesGroup {
+  name: string;
+  posts: Post[];
+}
+
+export function getSeriesGroups(locale: string): SeriesGroup[] {
+  const posts = getAllPosts(locale);
+  const groups = new Map<string, Post[]>();
+
+  for (const post of posts) {
+    if (!post.series) continue;
+    if (!groups.has(post.series)) groups.set(post.series, []);
+    groups.get(post.series)!.push(post);
+  }
+
+  for (const seriesPosts of groups.values()) {
+    seriesPosts.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }
+
+  return Array.from(groups.entries())
+    .map(([name, seriesPosts]) => ({ name, posts: seriesPosts }))
+    .sort((a, b) => b.posts.length - a.posts.length);
+}
+
+export function getSeriesPosts(locale: string, seriesName: string): Post[] {
+  const groups = getSeriesGroups(locale);
+  const group = groups.find((g) => g.name === seriesName);
+  return group?.posts ?? [];
+}
+
+export function getAllSeriesNames(locale: string): string[] {
+  return getSeriesGroups(locale).map((g) => g.name);
+}
+
 export function getRelatedPosts(
   locale: string,
   currentSlug: string,
