@@ -5,9 +5,14 @@ import { getAllPosts } from "@/lib/posts";
 import PostCard from "@/components/PostCard";
 import Pagination from "@/components/Pagination";
 
-export const metadata: Metadata = {
-  title: "Blog",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return { title: t(locale, "blog") };
+}
 
 export default async function BlogPage({
   params,

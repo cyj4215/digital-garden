@@ -4,9 +4,14 @@ import { type Locale } from "@/lib/config";
 import { t } from "@/lib/i18n";
 import { getSeriesGroups } from "@/lib/posts";
 
-export const metadata: Metadata = {
-  title: "Series",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return { title: t(locale, "allSeries") };
+}
 
 export default async function SeriesPage({
   params,
