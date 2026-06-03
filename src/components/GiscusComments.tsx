@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
 
 interface GiscusCommentsProps {
   locale: string;
@@ -9,6 +10,7 @@ interface GiscusCommentsProps {
 
 const GiscusComments: React.FC<GiscusCommentsProps> = ({ locale, slug }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -27,14 +29,14 @@ const GiscusComments: React.FC<GiscusCommentsProps> = ({ locale, slug }) => {
     script.setAttribute("data-reactions-enabled", "1");
     script.setAttribute("data-emit-metadata", "0");
     script.setAttribute("data-input-position", "top");
-    script.setAttribute("data-theme", "dark");
+    script.setAttribute("data-theme", resolvedTheme === "light" ? "light" : "dark");
     script.setAttribute("data-lang", locale === "zh" ? "zh-CN" : "en");
     script.setAttribute("data-loading", "lazy");
     script.crossOrigin = "anonymous";
     script.async = true;
 
     containerRef.current.appendChild(script);
-  }, [locale, slug]);
+  }, [locale, slug, resolvedTheme]);
 
   return (
     <div className="mt-12 rounded-xl border border-border/60 bg-bg-secondary/20 p-6">

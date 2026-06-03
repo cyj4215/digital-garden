@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { notFound } from "next/navigation";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
+import ThemeProvider from "@/components/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,11 +50,13 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${inter.variable} ${firaCode.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <AuthSessionProvider>
-        <Header locale={typedLocale} />
-        <main className="mx-auto max-w-4xl px-6 py-8">{children}</main>
-        <Footer locale={typedLocale} />
-      </AuthSessionProvider>
+        <ThemeProvider>
+          <AuthSessionProvider>
+            <Header locale={typedLocale} />
+            <main className="mx-auto max-w-4xl px-6 py-8">{children}</main>
+            <Footer locale={typedLocale} />
+          </AuthSessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

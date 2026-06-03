@@ -6,6 +6,7 @@ import { useSession, signOut } from "next-auth/react";
 import { siteConfig } from "@/lib/config";
 import LanguageSwitcher from "./LanguageSwitcher";
 import MobileMenu from "./MobileMenu";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useState, useRef, useEffect } from "react";
 
 export default function Header({ locale }: { locale: string }) {
@@ -79,6 +80,8 @@ export default function Header({ locale }: { locale: string }) {
               管理
             </Link>
           )}
+
+          <ThemeToggle />
 
           <div className="mx-2 h-5 w-px bg-border" />
 
