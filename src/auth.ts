@@ -56,28 +56,33 @@ export const {
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "github" && user?.email) {
-        const existingUser = await prisma.user.findFirst({
-          where: { githubId: account.providerAccountId },
-        });
-        if (!existingUser) {
-          await prisma.user.update({
-            where: { email: user.email },
-            data: {
-              githubId: account.providerAccountId,
-              role: "ADMIN",
-              image: user.image,
-            },
-          }).catch(async () => {
-            await prisma.user.create({
+        try {
+          const existingUser = await prisma.user.findFirst({
+            where: { githubId: account.providerAccountId },
+          });
+          if (!existingUser) {
+            await prisma.user.update({
+              where: { email: user.email },
               data: {
-                email: user.email,
-                name: user.name,
-                image: user.image,
                 githubId: account.providerAccountId,
                 role: "ADMIN",
+                image: user.image,
               },
+            }).catch(async () => {
+              await prisma.user.create({
+                data: {
+                  email: user.email,
+                  name: user.name,
+                  image: user.image,
+                  githubId: account.providerAccountId,
+                  role: "ADMIN",
+                },
+              });
             });
-          });
+          }
+        } catch (e) {
+          console.error("signIn callback error:", e);
+          // Don't block sign-in on DB errors
         }
       }
       return true;
@@ -85,19 +90,25 @@ export const {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
-          select: { role: true, avatar: true },
-        });
-        token.role = dbUser?.role || "USER";
-        token.avatar = dbUser?.avatar || user.image;
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { role: true, avatar: true },
+          });
+          token.role = dbUser?.role || "USER";
+          token.avatar = dbUser?.avatar || user.image;
+        } catch (e) {
+          console.error("jwt callback error:", e);
+          token.role = "USER";
+          token.avatar = user.image;
+        }
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        (session.user as unknown as Record<string, unknown>).role = token.role as string;
+        (session.user as unknown as Record<string, unknown>).role = (token.role as string) || "USER";
         (session.user as unknown as Record<string, unknown>).avatar = token.avatar as string | undefined;
       }
       return session;
