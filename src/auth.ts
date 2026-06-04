@@ -87,9 +87,10 @@ export const {
         token.id = user.id;
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { role: true },
+          select: { role: true, avatar: true },
         });
         token.role = dbUser?.role || "USER";
+        token.avatar = dbUser?.avatar || user.image;
       }
       return token;
     },
@@ -97,6 +98,7 @@ export const {
       if (session.user) {
         session.user.id = token.id as string;
         (session.user as unknown as Record<string, unknown>).role = token.role as string;
+        (session.user as unknown as Record<string, unknown>).avatar = token.avatar as string | undefined;
       }
       return session;
     },

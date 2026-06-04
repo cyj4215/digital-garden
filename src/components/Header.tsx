@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { siteConfig } from "@/lib/config";
@@ -102,11 +103,13 @@ export default function Header({ locale }: { locale: string }) {
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center gap-2 rounded-lg p-2 transition-colors hover:bg-bg-secondary"
               >
-                {session.user.image ? (
-                  <img
-                    src={session.user.image}
+                {((session.user as Record<string, unknown>).avatar as string) || session.user.image ? (
+                  <Image
+                    src={((session.user as Record<string, unknown>).avatar as string) || session.user.image || ""}
                     alt=""
-                    className="h-7 w-7 rounded-full"
+                    width={28}
+                    height={28}
+                    className="h-7 w-7 rounded-full border border-border object-cover"
                   />
                 ) : (
                   <div className="flex h-7 w-7 items-center justify-center rounded-full bg-accent/20 text-xs font-bold text-accent">
