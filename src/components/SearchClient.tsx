@@ -5,10 +5,33 @@ import Link from "next/link";
 
 function sanitizeHtml(html: string): string {
   const doc = new DOMParser().parseFromString(html, "text/html");
-  const marks = doc.querySelectorAll("mark");
-  return Array.from(marks).map(m => m.outerHTML).join("");
+  const walk = (node: Node): string => {
+    if (node.nodeType === Node.TEXT_NODE) return node.textContent || "";
+    if (node.nodeType !== Node.ELEMENT_NODE) return "";
+    const el = node as HTMLElement;
+    const tag = el.tagName.toLowerCase();
+    if (tag === "mark") {
+      const inner = Array.from(el.childNodes).map(walk).join("");
+      return `<mark>${inner}</mark>`;
+    }
+    return Array.from(el.childNodes).map(walk).join("");
+  };
+  return walk(doc.body);
 }
 
+function highlightTitle(text: string, query: string): React.ReactNode {
+  if (!query.trim()) return text;
+  const terms = query.trim().split(/\s+/);
+  const pattern = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+  if (!pattern) return text;
+  const regex = new RegExp(`(${pattern})`, "gi");
+  const parts = text.split(regex);
+  return parts.map((part, i) =>
+    regex.test(part)
+      ? <mark key={i}>{part}</mark>
+      : part
+  );
+}
 
 interface PagefindResult {
   id: string;
