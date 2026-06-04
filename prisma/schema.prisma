@@ -18,6 +18,16 @@ model User {
   githubId      String?   @unique
   createdAt     DateTime  @default(now())
 
+  // Profile fields
+  nickname        String?
+  bio             String?   @db.Text
+  birthDate       DateTime?
+  avatar          String?
+  skills          String?   // JSON array
+  socialLinks     String?   // JSON object
+  themePreference String    @default("dark")
+  profilePublic   Boolean   @default(true)
+
   accounts Account[]
   sessions Session[]
 }
