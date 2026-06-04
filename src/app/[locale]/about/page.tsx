@@ -19,13 +19,26 @@ export default async function AboutPage({
 }) {
   const { locale } = await params;
 
-  const adminUser = await prisma.user.findFirst({
-    where: { role: "ADMIN" },
-    select: {
-      name: true, nickname: true, bio: true, avatar: true,
-      skills: true, socialLinks: true,
-    },
-  });
+  let adminUser: {
+    name: string | null;
+    nickname: string | null;
+    bio: string | null;
+    avatar: string | null;
+    skills: string | null;
+    socialLinks: string | null;
+  } | null = null;
+
+  try {
+    adminUser = await prisma.user.findFirst({
+      where: { role: "ADMIN" },
+      select: {
+        name: true, nickname: true, bio: true, avatar: true,
+        skills: true, socialLinks: true,
+      },
+    });
+  } catch {
+    // DB unavailable at build time — fall back to siteConfig
+  }
 
   const displayName = adminUser?.nickname || adminUser?.name || siteConfig.author.name;
   const avatar = adminUser?.avatar || null;
