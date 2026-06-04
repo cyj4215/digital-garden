@@ -2,21 +2,14 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import DOMPurify from "dompurify";
 
-function sanitizeHtml(html: string): string {
-  const doc = new DOMParser().parseFromString(html, "text/html");
-  const walk = (node: Node): string => {
-    if (node.nodeType === Node.TEXT_NODE) return node.textContent || "";
-    if (node.nodeType !== Node.ELEMENT_NODE) return "";
-    const el = node as HTMLElement;
-    const tag = el.tagName.toLowerCase();
-    if (tag === "mark") {
-      const inner = Array.from(el.childNodes).map(walk).join("");
-      return `<mark>${inner}</mark>`;
-    }
-    return Array.from(el.childNodes).map(walk).join("");
-  };
-  return walk(doc.body);
+/** Sanitize Pagefind excerpt, keeping only safe inline tags: em, strong, mark, br. */
+function sanitizeExcerpt(html: string): string {
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ["em", "strong", "mark", "br"],
+    ALLOWED_ATTR: [],
+  });
 }
 
 function highlightTitle(text: string, query: string): React.ReactNode {
@@ -190,11 +183,11 @@ export default function SearchClient({ locale }: SearchClientProps) {
               className="card-glow group rounded-xl border border-border/60 bg-bg-secondary/20 p-5 transition-all duration-300 hover:border-border-light hover:bg-bg-secondary/50"
             >
               <h2 className="font-semibold text-foreground-bright transition-colors group-hover:text-accent">
-                {result.title}
+                {highlightTitle(result.title, query)}
               </h2>
               <div
                 className="mt-2 text-sm leading-relaxed text-text-secondary line-clamp-2 [&_mark]:bg-accent/20 [&_mark]:text-accent [&_mark]:rounded [&_mark]:px-0.5"
-                dangerouslySetInnerHTML={{ __html: sanitizeHtml(result.excerpt) }}
+                dangerouslySetInnerHTML={{ __html: sanitizeExcerpt(result.excerpt) }}
               />
             </Link>
           ))}
