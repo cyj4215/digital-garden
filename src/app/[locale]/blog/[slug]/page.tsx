@@ -71,6 +71,8 @@ export default async function BlogPostPage({
             <span className="text-border-light">·</span>
             <span className="tabular-nums">{post.readingTime}</span>
             <span className="text-border-light">·</span>
+            <span className="tabular-nums">{post.wordCount.toLocaleString()} {locale === "zh" ? "字" : "words"}</span>
+            <span className="text-border-light">·</span>
             <Link
               href={`/${locale}/categories/${encodeURIComponent(post.category)}`}
               className="rounded-full bg-accent/10 px-3 py-0.5 text-xs font-medium text-accent transition-colors hover:bg-accent/20"
@@ -181,6 +183,7 @@ export default async function BlogPostPage({
                 slug={rp.slug}
                 locale={l}
                 readingTime={rp.readingTime}
+                wordCount={rp.wordCount}
                 index={i}
                 coverImage={rp.coverImage}
               />

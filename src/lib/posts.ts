@@ -18,6 +18,7 @@ export interface PostFrontmatter {
 export interface Post extends PostFrontmatter {
   slug: string;
   readingTime: string;
+  wordCount: number;
   content: string;
 }
 
@@ -40,11 +41,13 @@ export function getAllPosts(locale: string): Post[] {
     const { data, content } = matter(fileContent);
     const frontmatter = data as PostFrontmatter;
     const stats = readingTime(content);
+    const wordCount = content.split(/\s+/).length;
 
     return {
       ...frontmatter,
       slug,
       readingTime: locale === "zh" ? stats.text.replace("min read", "分钟阅读") : stats.text,
+      wordCount,
       content,
     };
   });
@@ -63,11 +66,13 @@ export function getPostBySlug(locale: string, slug: string): Post | null {
   const { data, content } = matter(fileContent);
   const frontmatter = data as PostFrontmatter;
   const stats = readingTime(content);
+  const wordCount = content.split(/\s+/).length;
 
   return {
     ...frontmatter,
     slug,
     readingTime: locale === "zh" ? stats.text.replace("min read", "分钟阅读") : stats.text,
+    wordCount,
     content,
   };
 }

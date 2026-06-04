@@ -11,6 +11,7 @@ interface PostCardProps {
   slug: string;
   locale: Locale;
   readingTime: string;
+  wordCount?: number;
   index?: number;
   coverImage?: string;
 }
@@ -24,6 +25,7 @@ export default function PostCard({
   slug,
   locale,
   readingTime,
+  wordCount,
   index = 0,
   coverImage = undefined,
 }: PostCardProps) {
@@ -40,6 +42,12 @@ export default function PostCard({
           <time dateTime={date} className="tabular-nums">{date}</time>
           <span className="text-border-light">·</span>
           <span className="tabular-nums">{readingTime}</span>
+          {wordCount && (
+            <>
+              <span className="text-border-light">·</span>
+              <span className="tabular-nums">{wordCount.toLocaleString()} {locale === "zh" ? "字" : "words"}</span>
+            </>
+          )}
           <span className="text-border-light">·</span>
           <span className="rounded-full bg-accent/10 px-2.5 py-0.5 font-medium text-accent">
             {category}

@@ -56,6 +56,7 @@ export default async function BlogPage({
             slug={post.slug}
             locale={l}
             readingTime={post.readingTime}
+            wordCount={post.wordCount}
             index={i}
           />
         ))}
